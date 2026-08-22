@@ -1,88 +1,170 @@
 const questions = [
+
     {
-        question: "Which information should never be shared with anyone?",
+        question:
+            "Which information should never be shared with anyone?",
+
         options: [
             "UPI ID",
             "Bank name",
             "UPI PIN",
             "Account holder name"
         ],
-        answer: "UPI PIN"
+
+        answer:
+            "UPI PIN"
     },
 
+
     {
-        question: "What is the main purpose of saving money?",
+        question:
+            "What is the main purpose of saving money?",
+
         options: [
             "To spend everything later",
             "To prepare for future needs",
             "To avoid using banks",
             "To increase expenses"
         ],
-        answer: "To prepare for future needs"
+
+        answer:
+            "To prepare for future needs"
     },
 
+
     {
-        question: "What does UPI allow users to do?",
+        question:
+            "What does UPI allow users to do?",
+
         options: [
             "Transfer money digitally",
             "Print currency",
             "Create a bank",
             "Avoid passwords"
         ],
-        answer: "Transfer money digitally"
+
+        answer:
+            "Transfer money digitally"
     },
 
+
     {
-        question: "Which is an example of a strong financial safety practice?",
+        question:
+            "Which is a good financial safety practice?",
+
         options: [
             "Sharing your OTP",
             "Clicking unknown links",
             "Using official banking apps",
             "Sharing your UPI PIN"
         ],
-        answer: "Using official banking apps"
+
+        answer:
+            "Using official banking apps"
     },
 
+
     {
-        question: "What does diversification help reduce?",
+        question:
+            "What does diversification help reduce?",
+
         options: [
             "Internet speed",
             "Investment risk",
             "Bank balance",
             "Income"
         ],
-        answer: "Investment risk"
+
+        answer:
+            "Investment risk"
     }
+
 ];
 
 
 function Quiz() {
 
-    const [currentQuestion, setCurrentQuestion] = React.useState(0);
 
-    const [score, setScore] = React.useState(0);
+    const [
+        currentQuestion,
+        setCurrentQuestion
+    ] =
+        React.useState(0);
 
-    const [showResult, setShowResult] = React.useState(false);
+
+    const [
+        score,
+        setScore
+    ] =
+        React.useState(0);
+
+
+    const [
+        showResult,
+        setShowResult
+    ] =
+        React.useState(false);
+
+
+    const [
+        selectedAnswer,
+        setSelectedAnswer
+    ] =
+        React.useState(null);
 
 
     function selectAnswer(option) {
 
-        if (option === questions[currentQuestion].answer) {
+        setSelectedAnswer(option);
 
-            setScore(score + 1);
+
+        const correct =
+            option ===
+            questions[
+                currentQuestion
+            ].answer;
+
+
+        if (correct) {
+
+            setScore(
+                score + 1
+            );
 
         }
 
 
-        if (currentQuestion < questions.length - 1) {
+        setTimeout(
 
-            setCurrentQuestion(currentQuestion + 1);
+            function () {
 
-        } else {
+                setSelectedAnswer(
+                    null
+                );
 
-            setShowResult(true);
 
-        }
+                if (
+                    currentQuestion <
+                    questions.length - 1
+                ) {
+
+                    setCurrentQuestion(
+                        currentQuestion + 1
+                    );
+
+                } else {
+
+                    setShowResult(
+                        true
+                    );
+
+                }
+
+            },
+
+            500
+
+        );
 
     }
 
@@ -95,30 +177,57 @@ function Quiz() {
 
         setShowResult(false);
 
+        setSelectedAnswer(null);
+
     }
 
 
     if (showResult) {
 
+        const percentage =
+            Math.round(
+                (
+                    score /
+                    questions.length
+                ) * 100
+            );
+
+
         return (
 
-            <div className="card p-5 text-center mx-auto"
-                 style={{maxWidth: "600px"}}>
+            <div
+                className="card
+                           p-5
+                           text-center
+                           mx-auto"
 
-                <h2>🎉 Quiz Completed!</h2>
+                style={{
+                    maxWidth:
+                        "650px"
+                }}
+            >
 
-                <h1 className="text-primary my-4">
-                    {score} / {questions.length}
+                <h2>
+                    🎉 Quiz Completed!
+                </h2>
+
+
+                <h1
+                    className="text-success my-4"
+                >
+                    {score}
+                    {" / "}
+                    {questions.length}
                 </h1>
+
 
                 <p>
                     You scored
                     {" "}
-                    {Math.round(
-                        (score / questions.length) * 100
-                    )}
+                    {percentage}
                     %
                 </p>
+
 
                 <button
                     className="btn btn-primary"
@@ -135,26 +244,50 @@ function Quiz() {
 
 
     const question =
-        questions[currentQuestion];
+        questions[
+            currentQuestion
+        ];
 
 
     return (
 
         <div
-            className="card p-4 mx-auto"
-            style={{maxWidth: "700px"}}
+            className="card
+                       p-4
+                       mx-auto"
+
+            style={{
+                maxWidth:
+                    "700px"
+            }}
         >
 
-            <div className="d-flex justify-content-between mb-3">
+
+            <div
+                className="
+                    d-flex
+                    justify-content-between
+                    mb-3
+                "
+            >
 
                 <span>
-                    Question {currentQuestion + 1}
+
+                    Question
                     {" "}
-                    / {questions.length}
+                    {currentQuestion + 1}
+                    {" / "}
+                    {questions.length}
+
                 </span>
 
+
                 <span>
-                    Score: {score}
+
+                    Score:
+                    {" "}
+                    {score}
+
                 </span>
 
             </div>
@@ -166,8 +299,14 @@ function Quiz() {
                     className="progress-bar"
                     style={{
                         width:
-                            `${((currentQuestion + 1) /
-                            questions.length) * 100}%`
+                            `${
+                                (
+                                    (
+                                        currentQuestion + 1
+                                    ) /
+                                    questions.length
+                                ) * 100
+                            }%`
                     }}
                 >
                 </div>
@@ -176,27 +315,87 @@ function Quiz() {
 
 
             <h3 className="mb-4">
+
                 {question.question}
+
             </h3>
 
 
             <div className="d-grid gap-2">
 
-                {question.options.map((option, index) => (
+                {
+                    question.options.map(
 
-                    <button
-                        key={index}
-                        className="btn btn-outline-primary text-start p-3"
-                        onClick={() => selectAnswer(option)}
-                    >
+                        function (
+                            option,
+                            index
+                        ) {
 
-                        {option}
+                            let buttonClass =
+                                "btn btn-outline-success text-start p-3";
 
-                    </button>
 
-                ))}
+                            if (
+                                selectedAnswer ===
+                                option
+                            ) {
+
+                                if (
+                                    option ===
+                                    question.answer
+                                ) {
+
+                                    buttonClass =
+                                        "btn btn-success text-start p-3";
+
+                                } else {
+
+                                    buttonClass =
+                                        "btn btn-danger text-start p-3";
+
+                                }
+
+                            }
+
+
+                            return (
+
+                                <button
+                                    key={index}
+                                    className={
+                                        buttonClass
+                                    }
+                                    onClick={
+                                        function () {
+
+                                            if (
+                                                selectedAnswer ===
+                                                null
+                                            ) {
+
+                                                selectAnswer(
+                                                    option
+                                                );
+
+                                            }
+
+                                        }
+                                    }
+                                >
+
+                                    {option}
+
+                                </button>
+
+                            );
+
+                        }
+
+                    )
+                }
 
             </div>
+
 
         </div>
 
@@ -207,8 +406,14 @@ function Quiz() {
 
 const root =
     ReactDOM.createRoot(
-        document.getElementById("quiz-root")
+
+        document.getElementById(
+            "quiz-root"
+        )
+
     );
 
 
-root.render(<Quiz />);
+root.render(
+    <Quiz />
+);
