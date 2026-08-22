@@ -1,4 +1,4 @@
-const API_BASE = "https://api.frankfurter.dev/v2";
+const API_BASE = "https://api.frankfurter.dev/v1";
 
 let historicalChart = null;
 
@@ -27,7 +27,7 @@ async function getCurrencyRates() {
     try {
 
         const response = await fetch(
-            "https://api.frankfurter.app/latest?from=INR"
+            `${API_BASE}/latest?base=INR`
         );
 
 
@@ -228,7 +228,7 @@ async function convertCurrency() {
 
         const response =
             await fetch(
-                `https://api.frankfurter.app/latest?from=${from}&to=${to}`
+                `${API_BASE}/latest?base=${from}&symbols=${to}`
             );
 
 
@@ -365,7 +365,7 @@ async function loadHistoricalChart() {
         const response =
             await fetch(
 
-                `https://api.frankfurter.app/${start}..${end}?from=INR&to=${currency}`
+                `${API_BASE}/${start}..${end}?base=INR&symbols=${currency}`
 
             );
 
@@ -538,6 +538,21 @@ async function loadHistoricalChart() {
             "Historical graph error:",
             errorObject
         );
+
+
+        const chartBox =
+            canvas.closest(".chart-box");
+
+        if (chartBox) {
+
+            chartBox.innerHTML = `
+                <div class="alert alert-danger text-center mb-0">
+                    Unable to load historical exchange-rate data.
+                    Please try again later.
+                </div>
+            `;
+
+        }
 
     }
 
