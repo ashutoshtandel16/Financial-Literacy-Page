@@ -1,37 +1,67 @@
-const searchBox =
-    document.getElementById("searchTopic");
+/* =====================================
+   LEARN PAGE SEARCH
+   ===================================== */
+
+document.addEventListener(
+    "DOMContentLoaded",
+    function () {
+
+        const searchBox =
+            document.getElementById(
+                "searchTopic"
+            );
 
 
-if (searchBox) {
+        if (!searchBox) {
 
-    searchBox.addEventListener("keyup", function () {
+            return;
 
-        const searchText =
-            searchBox.value.toLowerCase();
-
-
-        const topics =
-            document.querySelectorAll(".topic");
+        }
 
 
-        topics.forEach(topic => {
+        searchBox.addEventListener(
+            "keyup",
+            function () {
 
-            const text =
-                topic.textContent.toLowerCase();
+                const searchText =
+                    searchBox.value
+                        .toLowerCase()
+                        .trim();
 
 
-            if (text.includes(searchText)) {
+                const topics =
+                    document.querySelectorAll(
+                        ".topic"
+                    );
 
-                topic.style.display = "";
 
-            } else {
+                topics.forEach(
+                    function (topic) {
 
-                topic.style.display = "none";
+                        const text =
+                            topic.textContent
+                                .toLowerCase();
+
+
+                        if (
+                            text.includes(searchText)
+                        ) {
+
+                            topic.style.display =
+                                "";
+
+                        } else {
+
+                            topic.style.display =
+                                "none";
+
+                        }
+
+                    }
+                );
 
             }
+        );
 
-        });
-
-    });
-
-}
+    }
+);
