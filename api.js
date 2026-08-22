@@ -682,27 +682,30 @@ document.addEventListener(
          * Wait until Chart.js is available.
          */
 
-        if (
-            document.getElementById(
-                "historicalCurrencyChart"
-            )
-        ) {
+      data.forEach(function(item, index) {
 
-            if (
-                typeof Chart !== "undefined"
-            ) {
+    if (
+        item.date &&
+        item.rate !== undefined
+    ) {
 
-                loadHistoricalChart();
+        // Keep approximately one observation
+        // per month instead of thousands of points.
 
-            } else {
+        const date = new Date(item.date);
 
-                console.error(
-                    "Chart.js has not loaded."
-                );
+        if (date.getDate() <= 7) {
 
-            }
+            labels.push(
+                formatDate(item.date)
+            );
+
+            values.push(
+                Number(item.rate)
+            );
 
         }
 
     }
-);
+
+});
