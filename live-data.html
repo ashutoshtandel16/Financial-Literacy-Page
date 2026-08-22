@@ -8,16 +8,10 @@
 
     <title>Digital Finance | Live Data</title>
 
-
-    <!-- Bootstrap -->
-
     <link
         href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
         rel="stylesheet"
     >
-
-
-    <!-- CSS -->
 
     <link rel="stylesheet" href="style.css">
 
@@ -26,8 +20,6 @@
 
 <body>
 
-
-<!-- ================= NAVBAR ================= -->
 
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
 
@@ -108,25 +100,21 @@
 </nav>
 
 
-<!-- ================= CONTENT ================= -->
-
 <div class="container my-5">
 
 
     <h1 class="text-center">
-        Live Exchange Rates
+        Live Currency Data
     </h1>
 
 
     <p class="text-center text-muted mb-4">
 
-        Convert currencies and check
-        current INR exchange rates.
+        Convert currencies and view the latest
+        exchange rates.
 
     </p>
 
-
-    <!-- IMAGE -->
 
     <div class="text-center mb-5">
 
@@ -139,11 +127,11 @@
     </div>
 
 
-    <!-- ================= CONVERTER ================= -->
+    <!-- CURRENCY CONVERTER -->
 
     <div
         class="card p-4 mx-auto mb-5"
-        style="max-width:850px;"
+        style="max-width: 850px;"
     >
 
         <h2 class="text-center mb-4">
@@ -153,8 +141,6 @@
 
         <div class="row g-3 align-items-end">
 
-
-            <!-- AMOUNT -->
 
             <div class="col-md-4">
 
@@ -176,8 +162,6 @@
 
             </div>
 
-
-            <!-- FROM -->
 
             <div class="col-md-3">
 
@@ -222,8 +206,6 @@
             </div>
 
 
-            <!-- TO -->
-
             <div class="col-md-3">
 
                 <label
@@ -267,8 +249,6 @@
             </div>
 
 
-            <!-- BUTTON -->
-
             <div class="col-md-2">
 
                 <button
@@ -284,48 +264,41 @@
         </div>
 
 
-        <!-- ERROR -->
-
         <div
             id="converterError"
             class="alert alert-danger mt-3"
-            style="display:none;"
+            style="display: none;"
         >
         </div>
 
-
-        <!-- RESULT -->
 
         <div
             id="conversionResult"
             class="alert alert-success mt-3 text-center"
-            style="display:none;"
+            style="display: none;"
         >
         </div>
-
 
     </div>
 
 
-    <!-- ================= LIVE RATES ================= -->
+    <!-- CURRENT RATES -->
 
-    <h2 class="text-center">
-        Current Exchange Rates
-    </h2>
+    <div class="text-center">
 
+        <h2>
+            Current Exchange Rates
+        </h2>
 
-    <p class="text-center text-muted">
+        <p class="text-muted">
 
-        Latest available rates fetched from the
-        exchange-rate API.
+            Latest available exchange rates.
 
-    </p>
+        </p>
 
-
-    <div class="text-center my-4">
 
         <button
-            class="btn btn-primary"
+            class="btn btn-primary my-3"
             onclick="getCurrencyRates()"
         >
             🔄 Refresh Rates
@@ -336,7 +309,7 @@
 
     <div
         id="loading"
-        class="text-center"
+        class="text-center my-3"
     >
         Loading currency rates...
     </div>
@@ -345,7 +318,7 @@
     <div
         id="error"
         class="alert alert-danger text-center"
-        style="display:none;"
+        style="display: none;"
     >
     </div>
 
@@ -357,11 +330,8 @@
     </div>
 
 
-
 </div>
 
-
-<!-- ================= FOOTER ================= -->
 
 <footer class="bg-dark text-white text-center p-3">
 
@@ -372,10 +342,7 @@
 </footer>
 
 
-<!-- Our API JavaScript -->
-
 <script src="api.js"></script>
-
 
 </body>
 
