@@ -1,5 +1,4 @@
-const API_BASE = "https://api.frankfurter.dev/v1";
-
+const API_BASE = "https://api.frankfurter.app";
 
 async function getCurrencyRates() {
 
@@ -12,33 +11,22 @@ async function getCurrencyRates() {
     const error =
         document.getElementById("error");
 
-
-    if (loading) {
-        loading.style.display = "block";
-    }
-
-    if (error) {
-        error.style.display = "none";
-    }
-
+    loading.style.display = "block";
+    error.style.display = "none";
 
     try {
 
-        const response = await fetch(
-            `${API_BASE}/latest?base=INR`
-        );
-
+        const response =
+            await fetch(
+                `${API_BASE}/latest?from=INR`
+            );
 
         if (!response.ok) {
-            throw new Error(
-                "Could not fetch current rates."
-            );
+            throw new Error("Failed to load rates");
         }
-
 
         const data =
             await response.json();
-
 
         const currencies = [
             "USD",
@@ -48,89 +36,70 @@ async function getCurrencyRates() {
             "JPY"
         ];
 
+        container.innerHTML = "";
 
-        if (container) {
+        currencies.forEach(function(currency) {
 
-            container.innerHTML = "";
+            const rate =
+                data.rates[currency];
 
+            if (rate === undefined) {
+                return;
+            }
 
-            currencies.forEach(
-                function(currency) {
+            container.innerHTML += `
 
-                    const rate =
-                        data.rates[currency];
+                <div class="col-md-4 col-lg">
 
+                    <div class="card text-center p-4 h-100">
 
-                    if (
-                        rate === undefined
-                    ) {
-                        return;
-                    }
-
-
-                    container.innerHTML += `
-
-                        <div class="col-md-4 col-lg">
-
-                            <div class="card text-center p-4 h-100">
-
-                                <div class="fs-2">
-                                    💱
-                                </div>
-
-                                <h5>
-                                    INR → ${currency}
-                                </h5>
-
-                                <h2 class="text-success">
-                                    ${Number(rate).toFixed(4)}
-                                </h2>
-
-                                <p class="text-muted mb-0">
-                                    1 INR =
-                                    ${Number(rate).toFixed(4)}
-                                    ${currency}
-                                </p>
-
-                            </div>
-
+                        <div class="fs-2">
+                            💱
                         </div>
 
-                    `;
+                        <h5>
+                            INR → ${currency}
+                        </h5>
 
-                }
-            );
+                        <h2 class="text-success">
+                            ${Number(rate).toFixed(4)}
+                        </h2>
 
-        }
+                        <p class="text-muted mb-0">
 
+                            1 INR =
+                            ${Number(rate).toFixed(4)}
+                            ${currency}
+
+                        </p>
+
+                    </div>
+
+                </div>
+
+            `;
+
+        });
 
     } catch (errorObject) {
 
         console.error(
-            "Current rates error:",
+            "Exchange-rate error:",
             errorObject
         );
 
+        error.style.display = "block";
 
-        if (error) {
-
-            error.style.display = "block";
-
-            error.textContent =
-                "Unable to load current exchange rates.";
-
-        }
+        error.textContent =
+            "Unable to load exchange rates. Please try again.";
 
     } finally {
 
-        if (loading) {
-            loading.style.display = "none";
-        }
+        loading.style.display = "none";
 
     }
 
 }
-
 
 
 async function convertCurrency() {
@@ -142,33 +111,27 @@ async function convertCurrency() {
             ).value
         );
 
-
     const from =
         document.getElementById(
             "fromCurrency"
         ).value;
-
 
     const to =
         document.getElementById(
             "toCurrency"
         ).value;
 
-
     const result =
         document.getElementById(
             "conversionResult"
         );
-
 
     const error =
         document.getElementById(
             "converterError"
         );
 
-
     result.style.display = "none";
-
     error.style.display = "none";
 
 
@@ -192,28 +155,34 @@ async function convertCurrency() {
         result.innerHTML = `
 
             <h4>
+
                 ${amount.toLocaleString(
                     "en-IN",
                     {
                         maximumFractionDigits: 2
                     }
                 )}
+
                 ${from}
+
             </h4>
 
             <h2 class="text-success">
+
                 =
+
                 ${amount.toLocaleString(
                     "en-IN",
                     {
                         maximumFractionDigits: 2
                     }
                 )}
+
                 ${to}
+
             </h2>
 
         `;
-
 
         result.style.display = "block";
 
@@ -226,73 +195,73 @@ async function convertCurrency() {
 
         const response =
             await fetch(
-                `${API_BASE}/latest?base=${from}&symbols=${to}`
+                `${API_BASE}/latest?from=${from}&to=${to}`
             );
-
 
         if (!response.ok) {
-
             throw new Error(
-                "Conversion failed."
+                "Conversion failed"
             );
-
         }
-
 
         const data =
             await response.json();
 
-
         const rate =
             Number(data.rates[to]);
-
 
         const converted =
             amount * rate;
 
-
         result.innerHTML = `
 
             <h4>
+
                 ${amount.toLocaleString(
                     "en-IN",
                     {
                         maximumFractionDigits: 2
                     }
                 )}
+
                 ${from}
+
             </h4>
 
             <h2 class="text-success">
+
                 =
+
                 ${converted.toLocaleString(
                     "en-IN",
                     {
                         maximumFractionDigits: 2
                     }
                 )}
+
                 ${to}
+
             </h2>
 
             <p class="mb-0">
-                1 ${from} =
+
+                1 ${from}
+                =
                 ${rate.toFixed(4)}
                 ${to}
+
             </p>
 
         `;
 
-
         result.style.display = "block";
-
 
     } catch (errorObject) {
 
         console.error(
-            "Converter error:",
+            "Conversion error:",
             errorObject
         );
-
 
         error.textContent =
             "Unable to convert currency. Please try again.";
@@ -302,7 +271,6 @@ async function convertCurrency() {
     }
 
 }
-
 
 
 document.addEventListener(
