@@ -114,14 +114,14 @@
 
 
     <h1 class="text-center">
-        Live & Historical Exchange Rates
+        Live Exchange Rates
     </h1>
 
 
     <p class="text-center text-muted mb-4">
 
-        Convert currencies and explore historical
-        INR exchange-rate data.
+        Convert currencies and check
+        current INR exchange rates.
 
     </p>
 
@@ -357,91 +357,6 @@
     </div>
 
 
-    <!-- ================= HISTORICAL GRAPH ================= -->
-
-    <div class="card p-4 mt-5">
-
-        <div class="row align-items-center mb-4">
-
-
-            <div class="col-md-8">
-
-                <h2>
-                    📈 INR Exchange Rate History
-                </h2>
-
-                <p class="text-muted mb-0">
-
-                    Explore approximately five years
-                    of historical INR exchange-rate data.
-
-                </p>
-
-            </div>
-
-
-            <div class="col-md-4">
-
-                <label
-                    for="historyCurrency"
-                    class="form-label"
-                >
-                    Select Currency
-                </label>
-
-
-                <select
-                    id="historyCurrency"
-                    class="form-select"
-                    onchange="loadHistoricalChart()"
-                >
-
-                    <option value="USD">
-                        USD - US Dollar
-                    </option>
-
-                    <option value="EUR">
-                        EUR - Euro
-                    </option>
-
-                    <option value="GBP">
-                        GBP - British Pound
-                    </option>
-
-                    <option value="AED">
-                        AED - UAE Dirham
-                    </option>
-
-                    <option value="JPY">
-                        JPY - Japanese Yen
-                    </option>
-
-                </select>
-
-            </div>
-
-        </div>
-
-
-        <div class="chart-box">
-
-            <canvas
-                id="historicalCurrencyChart"
-            ></canvas>
-
-        </div>
-
-
-        <p class="text-muted small mt-3">
-
-            The graph shows historical observations,
-            while the converter and current-rate cards
-            use current exchange-rate data.
-
-        </p>
-
-    </div>
-
 
 </div>
 
@@ -455,13 +370,6 @@
     </p>
 
 </footer>
-
-
-<!-- Chart.js -->
-
-<script
-    src="https://cdn.jsdelivr.net/npm/chart.js"
-></script>
 
 
 <!-- Our API JavaScript -->
