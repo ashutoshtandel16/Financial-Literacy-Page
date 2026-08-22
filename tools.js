@@ -1,84 +1,287 @@
-// Savings Calculator
+/* =====================================
+   SAVINGS CALCULATOR
+   ===================================== */
 
 function calculateSavings() {
 
-    const income = Number(document.getElementById("income").value);
-    const expenses = Number(document.getElementById("expenses").value);
+    const income =
+        Number(
+            document.getElementById(
+                "income"
+            ).value
+        );
 
-    const result = document.getElementById("savingsResult");
 
-    if (income <= 0 || expenses < 0) {
+    const expenses =
+        Number(
+            document.getElementById(
+                "expenses"
+            ).value
+        );
 
-        result.innerHTML = "Please enter valid values.";
+
+    const result =
+        document.getElementById(
+            "savingsResult"
+        );
+
+
+    if (
+        !Number.isFinite(income) ||
+        income <= 0
+    ) {
+
+        result.className =
+            "alert alert-danger mt-3";
+
+        result.textContent =
+            "Please enter a valid monthly income.";
+
         return;
 
     }
 
-    const savings = income - expenses;
 
-    const savingsRate = (savings / income) * 100;
+    if (
+        !Number.isFinite(expenses) ||
+        expenses < 0
+    ) {
+
+        result.className =
+            "alert alert-danger mt-3";
+
+        result.textContent =
+            "Please enter valid expenses.";
+
+        return;
+
+    }
+
+
+    if (expenses > income) {
+
+        result.className =
+            "alert alert-warning mt-3";
+
+        result.innerHTML = `
+
+            Your expenses are higher than
+            your income.
+
+            <br>
+
+            Try reducing unnecessary expenses.
+
+        `;
+
+        return;
+
+    }
+
+
+    const savings =
+        income - expenses;
+
+
+    const percentage =
+        (savings / income) * 100;
+
+
+    result.className =
+        "alert alert-success mt-3";
+
 
     result.innerHTML = `
-        Monthly Savings: ₹${savings.toFixed(2)}
+
+        <strong>
+            Monthly Savings:
+        </strong>
+
+        ₹${savings.toLocaleString("en-IN")}
+
         <br>
-        Savings Rate: ${savingsRate.toFixed(2)}%
+
+        <strong>
+            Savings Rate:
+        </strong>
+
+        ${percentage.toFixed(1)}%
+
     `;
+
 }
 
 
-// EMI Calculator
+/* =====================================
+   EMI CALCULATOR
+   ===================================== */
 
 function calculateEMI() {
 
     const principal =
-        Number(document.getElementById("loanAmount").value);
+        Number(
+            document.getElementById(
+                "loanAmount"
+            ).value
+        );
+
 
     const annualRate =
-        Number(document.getElementById("interestRate").value);
+        Number(
+            document.getElementById(
+                "interestRate"
+            ).value
+        );
+
 
     const years =
-        Number(document.getElementById("loanYears").value);
+        Number(
+            document.getElementById(
+                "loanYears"
+            ).value
+        );
 
 
     const result =
-        document.getElementById("emiResult");
+        document.getElementById(
+            "emiResult"
+        );
 
 
-    if (principal <= 0 || annualRate <= 0 || years <= 0) {
+    if (
+        !Number.isFinite(principal) ||
+        principal <= 0
+    ) {
 
-        result.innerHTML =
-            "Please enter valid values.";
+        result.className =
+            "alert alert-danger mt-3";
+
+        result.textContent =
+            "Please enter a valid loan amount.";
 
         return;
+
+    }
+
+
+    if (
+        !Number.isFinite(annualRate) ||
+        annualRate < 0
+    ) {
+
+        result.className =
+            "alert alert-danger mt-3";
+
+        result.textContent =
+            "Please enter a valid interest rate.";
+
+        return;
+
+    }
+
+
+    if (
+        !Number.isFinite(years) ||
+        years <= 0
+    ) {
+
+        result.className =
+            "alert alert-danger mt-3";
+
+        result.textContent =
+            "Please enter a valid loan tenure.";
+
+        return;
+
     }
 
 
     const monthlyRate =
         annualRate / 12 / 100;
 
+
     const months =
         years * 12;
 
 
-    const emi =
-        principal *
-        monthlyRate *
-        Math.pow(1 + monthlyRate, months) /
-        (Math.pow(1 + monthlyRate, months) - 1);
+    let emi;
+
+
+    if (monthlyRate === 0) {
+
+        emi =
+            principal / months;
+
+    } else {
+
+        emi =
+            principal *
+            monthlyRate *
+            Math.pow(
+                1 + monthlyRate,
+                months
+            ) /
+            (
+                Math.pow(
+                    1 + monthlyRate,
+                    months
+                ) - 1
+            );
+
+    }
 
 
     const totalPayment =
         emi * months;
 
+
     const totalInterest =
         totalPayment - principal;
 
 
+    result.className =
+        "alert alert-success mt-3";
+
+
     result.innerHTML = `
-        Monthly EMI: ₹${emi.toFixed(2)}
+
+        <strong>
+            Monthly EMI:
+        </strong>
+
+        ₹${emi.toLocaleString(
+            "en-IN",
+            {
+                maximumFractionDigits: 2
+            }
+        )}
+
         <br>
-        Total Interest: ₹${totalInterest.toFixed(2)}
+
+        <strong>
+            Total Interest:
+        </strong>
+
+        ₹${totalInterest.toLocaleString(
+            "en-IN",
+            {
+                maximumFractionDigits: 2
+            }
+        )}
+
         <br>
-        Total Payment: ₹${totalPayment.toFixed(2)}
+
+        <strong>
+            Total Payment:
+        </strong>
+
+        ₹${totalPayment.toLocaleString(
+            "en-IN",
+            {
+                maximumFractionDigits: 2
+            }
+        )}
+
     `;
+
 }
