@@ -2,11 +2,6 @@ const API_BASE = "https://api.frankfurter.dev/v2";
 
 let historicalChart = null;
 
-
-// =====================================
-// CURRENT EXCHANGE RATES
-// =====================================
-
 async function getCurrencyRates() {
 
     const loading = document.getElementById("loading");
@@ -28,7 +23,7 @@ async function getCurrencyRates() {
         );
 
         if (!response.ok) {
-            throw new Error("Could not load rates.");
+            throw new Error("Unable to fetch exchange rates.");
         }
 
         const data = await response.json();
@@ -47,13 +42,15 @@ async function getCurrencyRates() {
 
             currencies.forEach(function(currency) {
 
-                const item = data.find(
-                    rate => rate.quote === currency
-                );
+                const item = data.find(function(rate) {
+                    return rate.quote === currency;
+                });
 
                 if (!item) {
                     return;
                 }
+
+                const rate = Number(item.rate);
 
                 container.innerHTML += `
 
@@ -70,15 +67,13 @@ async function getCurrencyRates() {
                             </h5>
 
                             <h2 class="text-success">
-                                ${Number(item.rate).toFixed(4)}
+                                ${rate.toFixed(4)}
                             </h2>
 
                             <p class="text-muted mb-0">
-
                                 1 INR =
-                                ${Number(item.rate).toFixed(4)}
+                                ${rate.toFixed(4)}
                                 ${currency}
-
                             </p>
 
                         </div>
@@ -94,7 +89,7 @@ async function getCurrencyRates() {
     } catch (errorObject) {
 
         console.error(
-            "Current rate error:",
+            "Current exchange-rate error:",
             errorObject
         );
 
@@ -103,7 +98,7 @@ async function getCurrencyRates() {
             error.style.display = "block";
 
             error.textContent =
-                "Unable to load exchange rates.";
+                "Unable to load exchange rates. Please try again.";
 
         }
 
@@ -117,10 +112,6 @@ async function getCurrencyRates() {
 
 }
 
-
-// =====================================
-// CURRENCY CONVERTER
-// =====================================
 
 async function convertCurrency() {
 
@@ -139,7 +130,6 @@ async function convertCurrency() {
     const error =
         document.getElementById("converterError");
 
-
     const amount =
         Number(amountInput.value);
 
@@ -149,12 +139,8 @@ async function convertCurrency() {
     const to =
         toInput.value;
 
-
     result.style.display = "none";
     error.style.display = "none";
-
-
-    // Validation
 
     if (
         !Number.isFinite(amount) ||
@@ -170,56 +156,7 @@ async function convertCurrency() {
 
     }
 
-
-    // Same currency
-
     if (from === to) {
-
-        result.innerHTML = `
-
-            <h4>
-                ${amount.toLocaleString("en-IN")}
-                ${from}
-            </h4>
-
-            <h2 class="text-success">
-                =
-                ${amount.toLocaleString("en-IN")}
-                ${to}
-            </h2>
-
-        `;
-
-        result.style.display = "block";
-
-        return;
-
-    }
-
-
-    try {
-
-        const response = await fetch(
-            `${API_BASE}/rate/${from}/${to}`
-        );
-
-
-        if (!response.ok) {
-            throw new Error("Conversion failed.");
-        }
-
-
-        const data =
-            await response.json();
-
-
-        const rate =
-            Number(data.rate);
-
-
-        const converted =
-            amount * rate;
-
 
         result.innerHTML = `
 
@@ -234,42 +171,83 @@ async function convertCurrency() {
             </h4>
 
             <h2 class="text-success">
-
                 =
-
-                ${converted.toLocaleString(
+                ${amount.toLocaleString(
                     "en-IN",
                     {
                         maximumFractionDigits: 2
                     }
                 )}
-
                 ${to}
+            </h2>
 
+        `;
+
+        result.style.display = "block";
+
+        return;
+
+    }
+
+    try {
+
+        const response = await fetch(
+            `${API_BASE}/rate/${from}/${to}`
+        );
+
+        if (!response.ok) {
+            throw new Error("Currency conversion failed.");
+        }
+
+        const data =
+            await response.json();
+
+        const rate =
+            Number(data.rate);
+
+        const convertedAmount =
+            amount * rate;
+
+        result.innerHTML = `
+
+            <h4>
+                ${amount.toLocaleString(
+                    "en-IN",
+                    {
+                        maximumFractionDigits: 2
+                    }
+                )}
+                ${from}
+            </h4>
+
+            <h2 class="text-success my-2">
+                =
+                ${convertedAmount.toLocaleString(
+                    "en-IN",
+                    {
+                        maximumFractionDigits: 2
+                    }
+                )}
+                ${to}
             </h2>
 
             <p class="mb-0">
-
                 1 ${from}
                 =
                 ${rate.toFixed(4)}
                 ${to}
-
             </p>
 
         `;
 
-
         result.style.display = "block";
-
 
     } catch (errorObject) {
 
         console.error(
-            "Converter error:",
+            "Currency converter error:",
             errorObject
         );
-
 
         error.textContent =
             "Unable to convert currency. Please try again.";
@@ -281,121 +259,70 @@ async function convertCurrency() {
 }
 
 
-// =====================================
-// HISTORICAL GRAPH
-// =====================================
-
 async function loadHistoricalChart() {
 
     const select =
-        document.getElementById(
-            "historyCurrency"
-        );
+        document.getElementById("historyCurrency");
 
     const canvas =
         document.getElementById(
             "historicalCurrencyChart"
         );
 
-
     if (!select || !canvas) {
         return;
     }
 
-
     const currency =
         select.value;
 
-
     try {
 
-        /*
-         * We request approximately
-         * five years of daily data.
-         */
-
-        const endDate =
+        const today =
             new Date();
 
-
-        const startDate =
+        const fiveYearsAgo =
             new Date();
 
-
-        startDate.setFullYear(
-            startDate.getFullYear() - 5
+        fiveYearsAgo.setFullYear(
+            today.getFullYear() - 5
         );
 
-
-        const start =
-            startDate
+        const startDate =
+            fiveYearsAgo
                 .toISOString()
                 .split("T")[0];
-
-
-        const end =
-            endDate
-                .toISOString()
-                .split("T")[0];
-
-
-        /*
-         * IMPORTANT:
-         *
-         * Frankfurter's v2 endpoint uses
-         * "quotes", not "symbols".
-         */
 
         const url =
             `${API_BASE}/rates` +
             `?base=INR` +
-            `&quotes=${currency}` +
-            `&from=${start}` +
-            `&to=${end}`;
-
+            `&from=${startDate}` +
+            `&group=month`;
 
         console.log(
-            "Historical API:",
+            "Historical exchange-rate URL:",
             url
         );
-
 
         const response =
             await fetch(url);
 
-
         if (!response.ok) {
 
             throw new Error(
-                `HTTP error: ${response.status}`
+                "Historical API request failed. Status: " +
+                response.status
             );
 
         }
 
-
         const data =
             await response.json();
 
-
         console.log(
-            "Historical data:",
+            "Historical exchange-rate data:",
             data
         );
-
-
-        /*
-         * API returns an array like:
-         *
-         * [
-         *   {
-         *      base: "INR",
-         *      date: "...",
-         *      quote: "USD",
-         *      rate: 0.012
-         *   }
-         * ]
-         */
-
 
         if (
             !Array.isArray(data) ||
@@ -403,25 +330,24 @@ async function loadHistoricalChart() {
         ) {
 
             throw new Error(
-                "No historical data received."
+                "No historical exchange-rate data was returned."
             );
 
         }
 
-
         const labels = [];
         const values = [];
-
 
         data.forEach(function(item) {
 
             if (
-                item.date &&
-                item.rate !== undefined
+                item.quote === currency &&
+                item.rate !== undefined &&
+                item.date
             ) {
 
                 labels.push(
-                    formatDate(item.date)
+                    formatGraphDate(item.date)
                 );
 
                 values.push(
@@ -432,40 +358,34 @@ async function loadHistoricalChart() {
 
         });
 
-
         if (values.length === 0) {
 
             throw new Error(
-                "Historical data contained no rates."
+                "No historical data was found for " +
+                currency
             );
 
         }
-
-
-        /*
-         * Destroy old chart
-         */
 
         if (historicalChart) {
 
             historicalChart.destroy();
 
+            historicalChart = null;
+
         }
 
-
-        /*
-         * Create chart
-         */
+        const context =
+            canvas.getContext("2d");
 
         historicalChart =
             new Chart(
 
-                canvas.getContext("2d"),
+                context,
 
                 {
 
                     type: "line",
-
 
                     data: {
 
@@ -478,17 +398,23 @@ async function loadHistoricalChart() {
                                 label:
                                     `1 INR → ${currency}`,
 
-                                data: values,
+                                data:
+                                    values,
 
-                                borderWidth: 2,
+                                borderWidth:
+                                    2,
 
-                                pointRadius: 0,
+                                pointRadius:
+                                    2,
 
-                                pointHoverRadius: 4,
+                                pointHoverRadius:
+                                    5,
 
-                                tension: 0.25,
+                                tension:
+                                    0.25,
 
-                                fill: false
+                                fill:
+                                    false
 
                             }
 
@@ -496,31 +422,32 @@ async function loadHistoricalChart() {
 
                     },
 
-
                     options: {
 
-                        responsive: true,
+                        responsive:
+                            true,
 
-                        maintainAspectRatio: false,
-
+                        maintainAspectRatio:
+                            false,
 
                         interaction: {
 
-                            mode: "index",
+                            mode:
+                                "index",
 
-                            intersect: false
+                            intersect:
+                                false
 
                         },
-
 
                         plugins: {
 
                             legend: {
 
-                                display: true
+                                display:
+                                    true
 
                             },
-
 
                             tooltip: {
 
@@ -551,29 +478,41 @@ async function loadHistoricalChart() {
 
                         },
 
-
                         scales: {
 
                             x: {
 
+                                title: {
+
+                                    display:
+                                        true,
+
+                                    text:
+                                        "Year"
+
+                                },
+
                                 ticks: {
 
-                                    maxTicksLimit: 12,
+                                    maxTicksLimit:
+                                        12,
 
-                                    autoSkip: true
+                                    autoSkip:
+                                        true
 
                                 }
 
                             },
 
-
                             y: {
 
-                                beginAtZero: false,
+                                beginAtZero:
+                                    false,
 
                                 title: {
 
-                                    display: true,
+                                    display:
+                                        true,
 
                                     text:
                                         `Value of 1 INR in ${currency}`
@@ -590,7 +529,6 @@ async function loadHistoricalChart() {
 
             );
 
-
     } catch (errorObject) {
 
         console.error(
@@ -598,55 +536,38 @@ async function loadHistoricalChart() {
             errorObject
         );
 
-
-        /*
-         * Put a visible error message
-         * instead of leaving a blank graph.
-         */
-
         const chartBox =
             canvas.parentElement;
 
+        if (chartBox) {
 
-        chartBox.innerHTML = `
+            chartBox.innerHTML = `
 
-            <div
-                class="alert alert-warning text-center"
-            >
+                <div class="alert alert-warning text-center">
 
-                <strong>
-                    Historical graph could not be loaded.
-                </strong>
+                    <strong>
+                        Historical graph could not be loaded.
+                    </strong>
 
-                <br>
+                    <br><br>
 
-                Please refresh the page and try again.
+                    Please refresh the page and try again.
 
-                <br><br>
+                </div>
 
-                <small>
-                    Check the browser console if the
-                    problem continues.
-                </small>
+            `;
 
-            </div>
-
-        `;
+        }
 
     }
 
 }
 
 
-// =====================================
-// DATE FORMAT
-// =====================================
-
-function formatDate(dateString) {
+function formatGraphDate(dateString) {
 
     const date =
         new Date(dateString);
-
 
     return date.toLocaleDateString(
         "en-IN",
@@ -658,10 +579,6 @@ function formatDate(dateString) {
 
 }
 
-
-// =====================================
-// PAGE LOAD
-// =====================================
 
 document.addEventListener(
     "DOMContentLoaded",
@@ -677,35 +594,27 @@ document.addEventListener(
 
         }
 
+        if (
+            document.getElementById(
+                "historicalCurrencyChart"
+            )
+        ) {
 
-        /*
-         * Wait until Chart.js is available.
-         */
+            if (
+                typeof Chart !== "undefined"
+            ) {
 
-      data.forEach(function(item, index) {
+                loadHistoricalChart();
 
-    if (
-        item.date &&
-        item.rate !== undefined
-    ) {
+            } else {
 
-        // Keep approximately one observation
-        // per month instead of thousands of points.
+                console.error(
+                    "Chart.js has not loaded."
+                );
 
-        const date = new Date(item.date);
-
-        if (date.getDate() <= 7) {
-
-            labels.push(
-                formatDate(item.date)
-            );
-
-            values.push(
-                Number(item.rate)
-            );
+            }
 
         }
 
     }
-
-});
+);
